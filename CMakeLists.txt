@@ -7,7 +7,18 @@ set(src ${dir}/src)
 
 add_executable(PixelSim src/main.cpp
         src/noise/SimplexNoise.hpp
-        src/noise/SimplexNoise.cpp src/App.cpp src/App.hpp src/Game.cpp src/Game.hpp src/Scene.cpp src/Scene.hpp)
+        src/noise/SimplexNoise.cpp
+        src/App.cpp
+        src/App.hpp
+        src/Game.cpp
+        src/Game.hpp
+        src/Scene.cpp
+        src/Scene.hpp)
+add_executable(VerletTest src/verlet/verletTest.cpp
+        src/verlet/Link.hpp
+        src/verlet/Solver.hpp
+        src/verlet/VectorMath.hpp
+        src/verlet/VerletObject.hpp)
 
 include_directories(headers /usr/include c:/SFML/include)
 #include_directories(box2d C:/Users/Martin/Downloads/box2d-master/include)
@@ -17,6 +28,7 @@ find_package(SFML REQUIRED system window graphics network audio)
 if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
     target_link_libraries(PixelSim ${SFML_LIBRARIES})
+    target_link_libraries(VerletTest ${SFML_LIBRARIES})
 endif ()
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
