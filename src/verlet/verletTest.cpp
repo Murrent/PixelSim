@@ -385,8 +385,8 @@ int main() {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && eventClock.getElapsedTime().asSeconds() > 0.5f) {
             sf::Color color = sf::Color(rand() % 255 + 0, rand() % 255 + 0, rand() % 255 + 0);
             int size = 5;
-            for (int j = 0; j < 10; ++j) {
-                for (int i = 0; i < 10; ++i) {
+            for (int j = 0; j < 20; ++j) {
+                for (int i = 0; i < 20; ++i) {
                     objects.emplace_back();
                     colors.emplace_back();
                     objects[objects.size() - 1].size = size;
@@ -401,7 +401,7 @@ int main() {
 
             eventClock.restart();
         }
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !objects.empty()) {
             objects[0].accelerate((mousePos - objects[0].position) * 2000.0f);
         }
 
@@ -440,23 +440,25 @@ int main() {
 
 
         for (int i = 0; i < solver.loopLength; ++i) {
+            sf::Color color = sf::Color(255,0,0,50);
             sf::VertexArray lines(sf::LinesStrip, 2);
             lines[0].position = (sf::Vector2f) solver.gridStart + sf::Vector2f(i * solver.gridSlotSize, 0);
-            lines[0].color = sf::Color::Red;
+            lines[0].color = color;
             lines[1].position =
                     (sf::Vector2f) solver.gridStart + sf::Vector2f(i * solver.gridSlotSize, solver.gridSize);
-            lines[1].color = sf::Color::Red;
+            lines[1].color = color;
 
             window.draw(lines);
 
             lines[0].position = (sf::Vector2f) solver.gridStart + sf::Vector2f(0, i * solver.gridSlotSize);
-            lines[0].color = sf::Color::Red;
+            lines[0].color = color;
             lines[1].position =
                     (sf::Vector2f) solver.gridStart + sf::Vector2f(solver.gridSize, i * solver.gridSlotSize);
-            lines[1].color = sf::Color::Red;
+            lines[1].color = color;
 
             window.draw(lines);
             for (int j = 0; j < solver.loopLength; ++j) {
+                text.setFillColor(color);
                 text.setCharacterSize(8);
                 text.setString(std::to_string(solver.gridVector[i + j * solver.loopLength].size()));
                 text.setPosition(sf::Vector2f(i * solver.gridSlotSize, j * solver.gridSlotSize) +

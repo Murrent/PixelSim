@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <vector>
 #include <iostream>
 #include "VerletObject.hpp"
@@ -13,8 +14,9 @@ class Solver {
 public:
     sf::Vector2f gravity = {0.0f, 400.0f};
     std::vector<std::vector<uint32_t>> gridVector;
+    std::vector<std::pair<uint32_t, uint32_t>> pairs;
     const int gridSize = 800;
-    const int gridSlotSize = 25;
+    const int gridSlotSize = 10;
     const int loopLength = gridSize / gridSlotSize;
     const sf::Vector2i gridStart{int(-gridSize * 0.5f), int(-gridSize * 0.5f)};
 
@@ -73,6 +75,7 @@ public:
         for (auto &slot: gridVector) {
             slot.clear();
         }
+        pairs.clear();
         //std::cout << "Filling..." << std::endl;
         const uint32_t count = objects.size();
         for (uint32_t i = 0; i < count; ++i) {
@@ -110,18 +113,30 @@ public:
             for (int i = 0; i < slot.size(); ++i) {
                 auto &obj1 = objects[slot[i]];
                 for (int j = i + 1; j < slot.size(); ++j) {
+                    bool hasPair = false;
+                    for (auto& pair:pairs) {
+                        if ((pair.first == i && pair.second == j) || (pair.first == j && pair.second == i)){
+                            hasPair = true;
+                            break;
+                        }
+                    }
+                    if (hasPair) continue;
+
                     auto &obj2 = objects[slot[j]];
                     const sf::Vector2f axis = obj1.position - obj2.position;
-                    const float dist = Dist(sf::Vector2f(0, 0), axis);
-                    if (dist < obj1.size + obj2.size) {
+                    const float distSqr = SqrDist(obj1.position, obj2.position);
+                    const float fullSize = (obj1.size + obj2.size);
+                    if (distSqr < fullSize * fullSize) {
+                        const float dist = std::sqrt(distSqr);
                         const sf::Vector2f n = axis / dist;
-                        const float delta = (obj1.size + obj2.size) - dist;
+                        const float delta = fullSize - dist;
                         const float scale = 1 / (obj1.size * obj1.size + obj2.size * obj2.size);
                         // Scale was initially 0.5f but this was changed to make larger objects move less by small objects
+                        const sf::Vector2f endScale = scale * delta * n;
                         if (!obj1.staticBody)
-                            obj1.position += scale * obj2.size * obj2.size * delta * n;
+                            obj1.position += endScale * obj2.size * obj2.size;
                         if (!obj2.staticBody)
-                            obj2.position -= scale * obj1.size * obj1.size * delta * n;
+                            obj2.position -= endScale * obj1.size * obj1.size;
                     }
 
                 }
