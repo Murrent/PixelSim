@@ -14,25 +14,25 @@ public:
     float targetDistance{};
 
     virtual void apply(std::vector<VerletObject> &objects) {
-        VerletObject &obj1 = objects[object1];
-        VerletObject &obj2 = objects[object2];
-        const sf::Vector2f axis = obj1.position - obj2.position;
-        const float dist = Dist(sf::Vector2f(0, 0), axis);
-        const sf::Vector2f n = axis / dist;
-        const float scale = 1 / (obj1.size * obj1.size + obj2.size * obj2.size);
-//
-//        const float delta = targetDistance - dist;
-//        obj1.position += scale * obj2.size * obj2.size * delta * n;
-//        obj2.position -= scale * obj1.size * obj1.size * delta * n;
-        if (targetDistance < dist * 0.98f) {
-            const float delta = targetDistance - dist * 0.98f;
-            obj1.position += scale * obj2.size * obj2.size * delta * n;
-            obj2.position -= scale * obj1.size * obj1.size * delta * n;
-        } else if (targetDistance > dist * 1.02f) {
-            const float delta = targetDistance - dist * 1.02f;
-            obj1.position += scale * obj2.size * obj2.size * delta * n;
-            obj2.position -= scale * obj1.size * obj1.size * delta * n;
-        }
+//        VerletObject &obj1 = objects[object1];
+//        VerletObject &obj2 = objects[object2];
+//        const sf::Vector2f axis = obj1.position - obj2.position;
+//        const float dist = Dist(sf::Vector2f(0, 0), axis);
+//        const sf::Vector2f n = axis / dist;
+//        const float scale = 1 / (obj1.size * obj1.size + obj2.size * obj2.size);
+////
+////        const float delta = targetDistance - dist;
+////        obj1.position += scale * obj2.size * obj2.size * delta * n;
+////        obj2.position -= scale * obj1.size * obj1.size * delta * n;
+//        if (targetDistance < dist * 0.98f) {
+//            const float delta = targetDistance - dist * 0.98f;
+//            obj1.position += scale * obj2.size * obj2.size * delta * n;
+//            obj2.position -= scale * obj1.size * obj1.size * delta * n;
+//        } else if (targetDistance > dist * 1.02f) {
+//            const float delta = targetDistance - dist * 1.02f;
+//            obj1.position += scale * obj2.size * obj2.size * delta * n;
+//            obj2.position -= scale * obj1.size * obj1.size * delta * n;
+//        }
     }
 };
 
